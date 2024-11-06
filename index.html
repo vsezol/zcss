@@ -14,27 +14,32 @@
     }
 
     section > for-1-6.grid {
-      div {
-        flex: 1 1 calc(33.333% - var(--spacing));
-        min-width: 200px;
-
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        box-sizing: border-box;
-        padding: var(--spacing);
-
-        transition: transform 0.2s;
-
-        div.subtitle {
-          content: "Card $i";
-        }
+      onclick {
+        content: "console.log('Привет, мама $i!')";
+        cursor: pointer;
 
         div {
-          font-size: 1rem;
-          color: var(--text-color);
+          flex: 1 1 calc(33.333% - var(--spacing));
+          min-width: 200px;
 
-          content: "This is some text inside card $i.";
+          background-color: white;
+          border-radius: 8px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          box-sizing: border-box;
+          padding: var(--spacing);
+
+          transition: transform 0.2s;
+
+          div.subtitle {
+            content: "Card $i";
+          }
+
+          div {
+            font-size: 1rem;
+            color: var(--text-color);
+
+            content: "This is some text inside card $i.";
+          }
         }
       }
     }

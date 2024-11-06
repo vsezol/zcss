@@ -159,9 +159,18 @@ function setElementContent(element, variables) {
     content = content.replaceAll(key, variables[key]);
   }
 
-  element.innerText = content;
+  if (element.tagName.toLowerCase() === "onclick") {
+    element.setAttribute("onclick", content);
+  } else {
+    element.innerText = content;
+  }
 
   if (link) {
     element.href = link;
   }
+}
+
+function runContent(element) {
+  console.log(element.style.content.replaceAll('"', ""));
+  eval(element.style.content.replaceAll('"', ""));
 }
