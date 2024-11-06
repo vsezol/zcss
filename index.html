@@ -1,5 +1,50 @@
 <script src="zcss.js" defer></script>
 
+<style zcss>
+  div.container {
+    header {
+      h1.title {
+        content: "Welcome to zcss";
+      }
+
+      p {
+        margin-bottom: var(--spacing);
+        content: "A CSS-only framework for rapid web development";
+      }
+    }
+
+    section > repeat-6.grid {
+      div {
+        flex: 1 1 calc(33.333% - var(--spacing));
+        min-width: 200px;
+
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        box-sizing: border-box;
+        padding: var(--spacing);
+
+        transition: transform 0.2s;
+
+        div.subtitle {
+          content: "Card $i";
+        }
+
+        div {
+          font-size: 1rem;
+          color: var(--text-color);
+
+          content: "This is some text inside card $i.";
+        }
+      }
+    }
+
+    div > a.link {
+      content: "Get Started#https://vsezol.com";
+    }
+  }
+</style>
+
 <style>
   * {
     margin: 0;
@@ -24,10 +69,39 @@
     padding: 0;
     line-height: 1.6;
   }
-</style>
 
-<style zcss>
-  div {
+  .link {
+    cursor: pointer;
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: var(--primary-color);
+    color: white;
+    text-align: center;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+
+  .title {
+    margin: var(--spacing) 0;
+    color: var(--primary-color);
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  .subtitle {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+  }
+
+  .link:hover {
+    background-color: var(--secondary-color);
+  }
+
+  .container {
     width: 90%;
     max-width: 1200px;
     height: 100vh;
@@ -38,79 +112,15 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+  }
 
-    header {
-      h1 {
-        margin: var(--spacing) 0;
-        color: var(--primary-color);
-        font-size: 2rem;
-        text-align: center;
-
-        content: "Welcome to zcss";
-      }
-
-      p {
-        content: "A CSS-only framework for rapid web development";
-        margin-bottom: var(--spacing);
-      }
-    }
-
-    section {
-      repeat-6 {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: var(--spacing);
-        margin-bottom: var(--spacing);
-        align-items: center;
-        justify-content: center;
-
-        div {
-          flex: 1 1 calc(33.333% - var(--spacing));
-          min-width: 200px;
-
-          background-color: white;
-          border-radius: 8px;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-          box-sizing: border-box;
-          padding: var(--spacing);
-
-          transition: transform 0.2s;
-
-          div {
-            font-size: 1.25rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-            color: var(--primary-color);
-
-            content: "Card $i";
-          }
-
-          div {
-            font-size: 1rem;
-            color: var(--text-color);
-
-            content: "This is some text inside card $i.";
-          }
-        }
-      }
-    }
-
-    div {
-      a {
-        cursor: pointer;
-        display: inline-block;
-        padding: 0.5rem 1rem;
-        background-color: var(--primary-color);
-        color: white;
-        text-align: center;
-        border-radius: 4px;
-        text-decoration: none;
-        font-weight: bold;
-        transition: background-color 0.3s;
-
-        content: "Get Started#https://vsezol.com";
-      }
-    }
+  .grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--spacing);
+    margin-bottom: var(--spacing);
+    align-items: center;
+    justify-content: center;
   }
 </style>

@@ -11,18 +11,16 @@ Just put it into index.html
 
 <style zcss>
   repeat-3 {
-    article {
-      header {
-        h1 {
-          font-weight: bold;
-          color: green;
-          content: "Welcome to zcss $i";
-        }
+    article > header {
+      h1 {
+        font-weight: bold;
+        color: green;
+        content: "Welcome to zcss $i";
+      }
 
-        p {
-          font-style: italic;
-          content: "A CSS-only framework for rapid web development $i";
-        }
+      p {
+        font-style: italic;
+        content: "A CSS-only framework for rapid web development $i";
       }
     }
   }

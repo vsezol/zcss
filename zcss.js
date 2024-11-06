@@ -10,12 +10,21 @@ function render() {
 }
 
 function createHTMLTree(rule, rootVariables) {
-  let tag = rule.selectorText?.split(" ")?.at(-1) ?? "div";
+  let selector = rule.selectorText?.split("& ")?.at(-1) ?? "div";
+
+  if (selector.includes(":")) {
+    return null;
+  }
+
+  const treeSelector = parseSelector(selector);
+
+  const [parentElement, currentElement, currentSelector] =
+    createElementByTreeSelector(treeSelector);
 
   const children = [];
 
-  if (tag.startsWith("repeat")) {
-    const times = Number(tag.split("-").at(-1));
+  if (currentSelector.tag.startsWith("repeat")) {
+    const times = Number(currentSelector.tag.split("-").at(-1));
 
     for (let i = 0; i < times; i++) {
       for (let r of rule.cssRules) {
@@ -28,25 +37,10 @@ function createHTMLTree(rule, rootVariables) {
     }
   }
 
-  const element = document.createElement(tag);
-
-  for (let key of rule?.style ?? []) {
-    if (key.startsWith("padding")) {
-      element.style[key] = rule.style[key] || rule.style["padding"];
-      continue;
+  for (let key in rule?.style ?? []) {
+    if (isNaN(key) && rule.style[key] !== "") {
+      currentElement.style[key] = rule.style[key];
     }
-
-    if (key.startsWith("margin")) {
-      element.style[key] = rule.style[key] || rule.style["padding"];
-      continue;
-    }
-
-    if (key.endsWith("gap")) {
-      element.style[key] = rule.style[key] || rule.style["gap"];
-      continue;
-    }
-
-    element.style[key] = rule.style[key];
   }
 
   for (let [child, variables] of children) {
@@ -54,29 +48,22 @@ function createHTMLTree(rule, rootVariables) {
       ...rootVariables,
       ...variables,
     };
+
     const childElement = createHTMLTree(child, mergedVariables);
-    const childElementContent = childElement.style.content;
-
-    if (childElementContent) {
-      let [content, link] = childElementContent.replaceAll('"', "").split("#");
-
-      for (let key in mergedVariables) {
-        content = content.replaceAll(key, mergedVariables[key]);
-      }
-
-      childElement.innerText = content;
-
-      if (link) {
-        childElement.href = link;
-      }
+    if (!childElement) {
+      continue;
     }
 
+    setElementContent(childElement, mergedVariables);
+
     if (childElement) {
-      element.appendChild(childElement);
+      currentElement.appendChild(childElement);
     }
   }
 
-  return element;
+  setElementContent(currentElement, rootVariables);
+
+  return parentElement;
 }
 
 function getZCSS() {
@@ -95,4 +82,78 @@ function getZCSS() {
   }
 
   return zcssStyleSheet;
+}
+
+function createElementByTreeSelector(selector, parent) {
+  const element = document.createElement(selector.tag);
+
+  selector.classes.forEach((x) => element.classList.add(x));
+  if (selector.id) {
+    element.id = selector.id;
+  }
+
+  parent?.appendChild(element);
+
+  if (!selector.child) {
+    return [parent ?? element, element, selector];
+  }
+
+  return createElementByTreeSelector(selector?.child, element);
+}
+
+function parseSelector(selector) {
+  const parseSingleSelector = (selectorPart) => {
+    const result = {
+      tag: "",
+      classes: [],
+      id: undefined,
+    };
+
+    const parts = selectorPart.match(
+      /(^[a-zA-Z0-9-]+)|(\.[a-zA-Z0-9_-]+)|(#\w+)/g
+    );
+
+    parts.forEach((part) => {
+      if (part.startsWith(".")) {
+        result.classes.push(part.slice(1));
+      } else if (part.startsWith("#")) {
+        result.id = part.slice(1);
+      } else {
+        result.tag = part;
+      }
+    });
+
+    return result;
+  };
+
+  const parseRecursive = (selectorParts) => {
+    if (selectorParts.length === 0) return null;
+    const [current, ...rest] = selectorParts;
+    const node = parseSingleSelector(current);
+    node.child = rest.length > 0 ? parseRecursive(rest) : null;
+    return node;
+  };
+
+  const selectorParts = selector.split(/\s*>\s*/);
+  return parseRecursive(selectorParts);
+}
+
+function setElementContent(element, variables) {
+  const elementContent = element.style.content;
+
+  if (!elementContent) {
+    return;
+  }
+
+  let [content, link] = elementContent.replaceAll('"', "").split("#");
+
+  for (let key in variables) {
+    content = content.replaceAll(key, variables[key]);
+  }
+
+  element.innerText = content;
+
+  if (link) {
+    element.href = link;
+  }
 }
