@@ -31,6 +31,14 @@ function createHTMLTree(rule, rootVariables) {
         children.push([r, { $i: i }]);
       }
     }
+  } else if (currentSelector.tag.startsWith("for")) {
+    const [from, to] = currentSelector.tag.split("-").slice(1).map(Number);
+
+    for (let i = from; i < to; i++) {
+      for (let r of rule.cssRules) {
+        children.push([r, { $i: i }]);
+      }
+    }
   } else {
     for (let r of rule.cssRules) {
       children.push([r, {}]);
